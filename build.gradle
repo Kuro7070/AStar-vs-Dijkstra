@@ -1,0 +1,41 @@
+plugins {
+  id 'java'
+  id 'application'
+}
+
+repositories {
+  mavenCentral() // We want to download our packages from the Maven central repository
+}
+
+
+group 'astar'
+version '1.0-SNAPSHOT'
+sourceCompatibility = 1.13
+application {
+  mainClassName = 'astar.Game'
+}
+
+
+dependencies {
+  implementation 'org.apache.commons:commons-lang3:3.6'               // Apache commons library
+  implementation 'org.apache.commons:commons-collections4:4.0'        // Apache commons library
+  implementation 'org.slf4j:slf4j-simple:1.7.30'                      // Logging framework needed by Javalin
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'      //| JUnit 5 uses multiple packages, we need its API and
+  testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.1'   //| the extension for parameterized tests (during build)
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.1'      //| as well as the runtime for execution.
+}
+
+test {
+  useJUnitPlatform()
+  failFast = false  // Always run all tests, not abort after first failure.
+  testLogging {
+    events "passed", "skipped", "failed"
+    exceptionFormat "full"
+  }
+}
+
+tasks.withType(JavaExec) {
+    if (System.getProperty('DEBUG', 'false') == 'true') {
+        jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9099'
+    }
+}
